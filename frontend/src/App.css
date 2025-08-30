@@ -1,0 +1,71 @@
+/* === StudyBuddy Night Mode (App.css) === */
+body {
+  margin: 0;
+  background-color: #161b22;
+  font-family: 'Segoe UI', sans-serif;
+  color: #e6edf3;
+}
+
+.app {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.main {
+  flex: 1;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #161b22;
+}
+
+.greeting {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #58a6ff;
+  margin-bottom: 120px;
+}
+
+/* === Chat Box === */
+.chat-box {
+  position: absolute;
+  bottom: 24px;
+  width: 60%;
+  display: flex;
+  background-color: #1e242d;
+  border: 1px solid #2f3846;
+  border-radius: 24px;
+  padding: 10px 16px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.chat-box input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: #e6edf3;
+  font-size: 1rem;
+  outline: none;
+}
+
+.chat-box button {
+  background-color: #fbbc6e;
+  color: #161b22;
+  border: none;
+  border-radius: 16px;
+  padding: 6px 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.chat-box button:hover {
+  background-color: #ffd58f;
+}
+
+html {
+  scroll-behavior: smooth;
+}
