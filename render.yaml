@@ -6,10 +6,10 @@ services:
     buildCommand: |
       cd backend
       pip install -r requirements.txt
-    startCommand: ./start-render.sh
+    startCommand: |
+      cd backend
+      uvicorn app.main:app --host 0.0.0.0 --port $PORT
     envVars:
-      - key: PORT
-        value: 8000
       - key: PYTHONPATH
         value: /opt/render/project/src/backend
       - key: PYTHONUNBUFFERED
@@ -30,10 +30,9 @@ services:
         value: https://gyanforge-frontend.onrender.com
     healthCheckPath: /health
     
-  # Frontend Service  
-  - type: web
+  # Frontend Static Site
+  - type: static
     name: gyanforge-frontend
-    runtime: node
     buildCommand: |
       cd frontend
       npm ci
@@ -54,6 +53,7 @@ services:
     name: gyanforge-redis
     plan: free
     maxmemoryPolicy: allkeys-lru
+    ipAllowList: []  # Allow all IPs
 
 databases:
   # PostgreSQL Database
