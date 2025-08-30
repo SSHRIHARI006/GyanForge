@@ -4,7 +4,7 @@ from typing import Dict, List, Optional, Any
 
 from app.db.session import get_session
 from app.core.security import get_current_user
-from app.services.learning_path_service import LearningPathService
+from app.services.learning_path_service_simple import LearningPathService
 from app.models.models import User
 from app.schemas.schemas import LearningPathRequest, LearningPathResponse
 
@@ -23,10 +23,10 @@ async def generate_learning_path(
     learning_path_service = LearningPathService(db_session=db)
     
     # Call the learning path service
-    result = learning_path_service.generate_learning_path(
+    result = await learning_path_service.generate_personalized_path(
         user_id=current_user.id, 
-        topic=request.topic_area, 
-        goal_description=request.goal_description
+        goal=request.topic_area, 
+        background=request.goal_description or ""
     )
     
     # Check for errors

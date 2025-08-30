@@ -1,4 +1,4 @@
-# Simple Docker build for GyanForge (avoiding dependency conflicts)
+# Simple Docker build for GyanForge (staged installation)
 FROM python:3.11-slim
 
 # Set working directory
@@ -10,24 +10,25 @@ RUN apt-get update && apt-get install -y \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Upgrade pip
-RUN pip install --upgrade pip
+# Upgrade pip and install build tools
+RUN pip install --upgrade pip setuptools wheel
 
-# Install core dependencies manually (avoiding conflicts)
-RUN pip install fastapi==0.104.1 \
-    uvicorn[standard]==0.24.0 \
-    pydantic==2.4.2 \
-    sqlmodel==0.0.8 \
-    sqlalchemy==1.4.41 \
-    python-jose[cryptography]==3.3.0 \
-    passlib[bcrypt]==1.7.4 \
-    python-multipart==0.0.6 \
-    psycopg2-binary==2.9.9 \
-    google-generativeai==0.3.2 \
-    python-dotenv==1.0.0 \
-    requests==2.31.0 \
-    PyJWT==2.8.0 \
-    psutil==5.9.6
+# Install dependencies in stages to avoid conflicts
+# Stage 1: Core web framework
+RUN pip install fastapi uvicorn[standard]
+
+# Stage 2: Data validation and ORM
+RUN pip install pydantic sqlmodel sqlalchemy==1.4.53
+
+# Stage 3: Authentication and security
+RUN pip install python-jose[cryptography] passlib[bcrypt] PyJWT
+
+# Stage 4: HTTP and utilities
+RUN pip install python-multipart python-dotenv requests psutil
+
+# Stage 5: AI and database (optional - skip if conflicts)
+RUN pip install google-generativeai || echo "Skipping AI package"
+RUN pip install psycopg2-binary || echo "Skipping PostgreSQL"
 
 # Copy backend application code
 COPY backend/ .

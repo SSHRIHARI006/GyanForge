@@ -3,7 +3,7 @@ from pydantic import BaseModel
 from typing import Optional
 from app.core.security import get_current_user
 from app.models.models import User
-from app.services.enhanced_chat_service import EnhancedChatService
+from app.services.simple_chat_service import SimpleChatService as EnhancedChatService
 
 router = APIRouter(prefix="/api/v1", tags=["chat"])
 

@@ -1,0 +1,29 @@
+# Ultra-minimal Docker build for GyanForge
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+
+# Install only the most essential packages
+RUN pip install --upgrade pip
+RUN pip install fastapi uvicorn python-dotenv
+
+# Copy application code
+COPY backend/ .
+
+# Create directories
+RUN mkdir -p storage
+
+# Set environment
+ENV PYTHONPATH=/app
+ENV PYTHONUNBUFFERED=1
+
+EXPOSE 8000
+
+# Simple health check
+HEALTHCHECK CMD curl -f http://localhost:8000/health || exit 1
+
+# Start with minimal setup
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
