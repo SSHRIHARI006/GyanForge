@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlmodel import SQLModel
 
 from app.db.session import engine
+from app.core.config import Settings
 from app.api.v1.auth import router as auth_router
 from app.api.v1.users import router as users_router
 from app.api.v1.modules import router as modules_router
@@ -13,16 +14,19 @@ from app.api.v1.enhanced_modules import router as enhanced_modules_router
 from app.api.v1.enhanced_chat import router as enhanced_chat_router
 from app.api.v1.health import router as health_router
 
+# Initialize settings
+settings = Settings()
+
 app = FastAPI(
 	title="GyanForge API",
 	description="Backend API for GyanForge adaptive learning platform with AI-powered content generation",
 	version="2.0.0"
 )
 
-# Configure CORS
+# Configure CORS with environment-specific origins
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # In production, restrict to your frontend domain
+    allow_origins=settings.cors_origins_list,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

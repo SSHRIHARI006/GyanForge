@@ -1,19 +1,62 @@
-{
-  "name": "gyanforge-backend",
-  "build": {
-    "dockerfile": "backend/Dockerfile"
-  },
-  "env": {
-    "PORT": "8000",
-    "PYTHONPATH": "/app",
-    "PYTHONUNBUFFERED": "1",
-    "DATABASE_URL": "@database_url",
-    "REDIS_URL": "@redis_url",
-    "GEMINI_API_KEY": "@gemini_api_key", 
-    "PINECONE_API_KEY": "@pinecone_api_key",
-    "PINECONE_INDEX_NAME": "@pinecone_index_name",
-    "SECRET_KEY": "@secret_key"
-  },
-  "healthCheck": "/health",
-  "startCommand": "uvicorn app.main:app --host 0.0.0.0 --port $PORT"
-}
+services:
+  # Backend API Service
+  - type: web
+    name: gyanforge-backend
+    runtime: python
+    buildCommand: |
+      cd backend
+      pip install -r requirements.txt
+    startCommand: ./start-render.sh
+    envVars:
+      - key: PORT
+        value: 8000
+      - key: PYTHONPATH
+        value: /opt/render/project/src/backend
+      - key: PYTHONUNBUFFERED
+        value: 1
+      - key: ENVIRONMENT
+        value: production
+      - key: DATABASE_URL
+        sync: false
+      - key: SECRET_KEY
+        generateValue: true
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: PINECONE_API_KEY
+        sync: false
+      - key: PINECONE_INDEX_NAME
+        value: gyanforge-data
+      - key: CORS_ORIGINS
+        value: https://gyanforge-frontend.onrender.com
+    healthCheckPath: /health
+    
+  # Frontend Service  
+  - type: web
+    name: gyanforge-frontend
+    runtime: node
+    buildCommand: |
+      cd frontend
+      npm ci
+      npm run build
+    staticPublishPath: frontend/build
+    envVars:
+      - key: REACT_APP_API_URL
+        value: https://gyanforge-backend.onrender.com
+      - key: REACT_APP_ENV
+        value: production
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+
+  # Redis Cache Service
+  - type: redis
+    name: gyanforge-redis
+    plan: free
+    maxmemoryPolicy: allkeys-lru
+
+databases:
+  # PostgreSQL Database
+  - name: gyanforge-db
+    databaseName: gyanforge
+    user: gyanforge_user
