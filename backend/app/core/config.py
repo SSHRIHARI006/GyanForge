@@ -10,7 +10,7 @@ class Settings:
 
     This avoids the need for `pydantic-settings` during local development.
     """
-    database_url: str = Field(default="sqlite:///./gyanforge.db") = os.getenv("DATABASE_URL", "sqlite:///./gyanforge.db")
+    database_url: str = os.getenv("DATABASE_URL", "sqlite:///./gyanforge.db")
     secret_key: str = os.getenv("SECRET_KEY", "your-secret-key-change-this")
     algorithm: str = os.getenv("ALGORITHM", "HS256")
     access_token_expire_minutes: int = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "1440"))  # 24 hours
