@@ -1,0 +1,31 @@
+# Minimal requirements for Docker deployment
+# Core FastAPI and server
+fastapi>=0.104.1
+uvicorn[standard]>=0.24.0
+
+# Database and ORM
+sqlmodel>=0.0.8
+sqlalchemy>=1.4.41,<2.0.0
+psycopg2-binary>=2.9.9
+
+# Authentication and security
+python-jose[cryptography]>=3.3.0
+passlib[bcrypt]>=1.7.4
+PyJWT>=2.8.0
+
+# Data handling
+pydantic>=2.4.0
+python-multipart>=0.0.6
+python-dotenv>=1.0.0
+requests>=2.31.0
+
+# AI and ML (core)
+google-generativeai>=0.3.2
+
+# System and utilities
+psutil>=5.9.6
+
+# Optional (can be added later)
+# redis>=5.2.0
+# reportlab>=4.0.4
+# pinecone-client>=2.2.4
