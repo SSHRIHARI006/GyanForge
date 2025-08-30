@@ -29,31 +29,6 @@ services:
       - key: CORS_ORIGINS
         value: https://gyanforge-frontend.onrender.com
     healthCheckPath: /health
-    
-  # Frontend Static Site
-  - type: static
-    name: gyanforge-frontend
-    buildCommand: |
-      cd frontend
-      npm ci
-      npm run build
-    staticPublishPath: frontend/build
-    envVars:
-      - key: REACT_APP_API_URL
-        value: https://gyanforge-backend.onrender.com
-      - key: REACT_APP_ENV
-        value: production
-    routes:
-      - type: rewrite
-        source: /*
-        destination: /index.html
-
-  # Redis Cache Service
-  - type: redis
-    name: gyanforge-redis
-    plan: free
-    maxmemoryPolicy: allkeys-lru
-    ipAllowList: []  # Allow all IPs
 
 databases:
   # PostgreSQL Database
