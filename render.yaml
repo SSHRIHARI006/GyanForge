@@ -1,25 +1,14 @@
 services:
-  # Backend API Service
+  # Backend API Service (Docker)
   - type: web
     name: gyanforge-backend
-    runtime: python
-    buildCommand: |
-      cd backend
-      pip install -r requirements.txt
-    startCommand: |
-      cd backend
-      uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    runtime: docker
+    dockerfilePath: ./Dockerfile
     envVars:
-      - key: PYTHONPATH
-        value: /opt/render/project/src/backend
-      - key: PYTHONUNBUFFERED
-        value: 1
       - key: ENVIRONMENT
         value: production
-      - key: DATABASE_URL
-        sync: false
       - key: SECRET_KEY
-        generateValue: true
+        sync: false
       - key: GEMINI_API_KEY
         sync: false
       - key: PINECONE_API_KEY
@@ -28,10 +17,6 @@ services:
         value: gyanforge-data
       - key: CORS_ORIGINS
         value: https://gyanforge-frontend.onrender.com
+      - key: DATABASE_URL
+        value: sqlite:///./gyanforge.db
     healthCheckPath: /health
-
-databases:
-  # PostgreSQL Database
-  - name: gyanforge-db
-    databaseName: gyanforge
-    user: gyanforge_user
